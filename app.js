@@ -15,7 +15,7 @@ const userRouter = require("./routes/user");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+//const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("./models/user.js");
 
 const wrapAsync = require("./utils/wrapAsync.js");
@@ -79,33 +79,33 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(User.authenticate()));
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-    },
-    async (accessToken, refreshToken, profile, done) => {
-      try {
-        let user = await User.findOne({ email: profile.emails[0].value });
+//passport.use(
+//  new GoogleStrategy(
+//    {
+//      clientID: process.env.GOOGLE_CLIENT_ID,
+//      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+//      callbackURL: "/auth/google/callback",
+//    },
+//    async (accessToken, refreshToken, profile, done) => {
+//      try {
+//        let user = await User.findOne({ email: profile.emails[0].value });
 
-        if (!user) {
-          user = new User({
-            username: profile.displayName,
-            email: profile.emails[0].value,
-          });
+//        if (!user) {
+//          user = new User({
+//            username: profile.displayName,
+//            email: profile.emails[0].value,
+//          });
 
-          await user.save();
-        }
+//          await user.save();
+//        }
 
-        return done(null, user);
-      } catch (err) {
-        return done(err, null);
-      }
-    },
-  ),
-);
+//        return done(null, user);
+//      } catch (err) {
+//        return done(err, null);
+//      }
+//    },
+//  ),
+//);
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -140,6 +140,8 @@ app.use((err, req, res, next) => {
   res.status(status).render("error.ejs", { message });
 });
 
-app.listen(8080, () => {
-  console.log("Server is listening to port 8080");
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
