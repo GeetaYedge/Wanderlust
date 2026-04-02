@@ -1,3 +1,7 @@
+/* ============================================
+   ORIGINAL CSS — UNCHANGED
+   ============================================ */
+
 body {
   font-family: "Plus Jakarta Sans", sans-serif !important;
   display: flex;
@@ -8,6 +12,7 @@ body {
 .container {
   flex: 1;
 }
+
 .navbar {
   height: 5rem;
   background-color: white;
@@ -22,6 +27,7 @@ body {
 .nav-link {
   color: #222222 !important;
 }
+
 .f-info-links a {
   text-decoration: none;
   color: #222222;
@@ -45,6 +51,7 @@ body {
   font-size: 1.2rem;
   margin-right: 1rem;
 }
+
 .f-info {
   text-align: center;
   height: 8rem;
@@ -81,6 +88,7 @@ body {
 .card-img-overlay {
   opacity: 0;
 }
+
 .card-img-overlay:hover {
   opacity: 0.2;
   background-color: white;
@@ -91,26 +99,182 @@ body {
   background-color: #fe424d !important;
   border: none !important;
 }
+
 .edit-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
 
 .show-img {
+  width: 100%;
+  max-height: 480px;
   height: 30vh;
+  object-fit: cover;
 }
 
 .btns {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .show-card {
   padding-left: 0;
   padding-right: 0;
 }
+
+/* ── MAP FIX ──────────────────────────────────
+   Was height:40px; width:10vh — invisible on
+   all screens. Fixed to 400px full width.
+   ─────────────────────────────────────────── */
 #map {
-  height: 40px;
-  width: 10vh;
+  height: 400px;
+  width: 100%;
   margin: 30px auto;
-  /*border-radius: 12px;*/
+}
+
+/* ── NEW: .listing-img ────────────────────────
+   Replaces the inline style="height:20rem" on
+   images in index.ejs. Laptop still gets 20rem.
+   Mobile override is in the media query below.
+   ─────────────────────────────────────────── */
+.listing-img {
+  height: 20rem;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ── NEW: edit form original image preview ───
+   The <img> in edit.ejs has no size so it
+   renders huge. Cap it to something sensible.
+   ─────────────────────────────────────────── */
+.edit-preview-img {
+  width: 100%;
+  max-width: 300px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+/* ── NEW: flash alert responsive ─────────────
+   col-6 offset-3 is fine on desktop but on
+   mobile it makes the alert tiny and off-center.
+   ─────────────────────────────────────────── */
+.flash-msg {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+/* ============================================
+   MOBILE MEDIA QUERIES
+   ONLY fires on screens < 576px (phones).
+   Laptop at 1200px+ never sees any of this.
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Navbar: let it shrink naturally on mobile
+     instead of being locked to 5rem           */
+  .navbar {
+    height: auto;
+    padding: 0.5rem 1rem;
+  }
+
+  /* Container: tighter side padding           */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Listing images: 1 per row so image gets
+     full width — no squishing, no quality loss */
+  .listing-img {
+    height: 16rem;
+  }
+
+  /* Show page hero image                      */
+  .show-img {
+    height: 220px;
+  }
+
+  /* Map: 400px is too tall on a phone         */
+  #map {
+    height: 220px;
+    margin: 1rem 0;
+  }
+
+  /* Edit/Delete buttons: stack vertically so
+     neither gets cut off on narrow screens    */
+  .btns {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0;
+    margin-top: 0.75rem;
+  }
+
+  .btns .btn,
+  .btns form,
+  .btns form .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Footer: fixed 8rem clips content on mobile */
+  .f-info {
+    height: auto;
+    padding: 1rem 0;
+    gap: 0.4rem;
+  }
+
+  /* Review textarea: cols="50" causes
+     horizontal scroll on entire page          */
+  textarea.form-control {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Headings: slightly smaller so they
+     don't overflow on small screens           */
+  h3 {
+    font-size: 1.3rem;
+  }
+  h4 {
+    font-size: 1.1rem;
+  }
+
+  /* Filter bar: tighter spacing on mobile     */
+  .filter {
+    margin-right: 1rem;
+    font-size: 1rem;
+  }
+
+  .filter p {
+    font-size: 0.7rem;
+  }
+
+  /* Tax toggle: hide label text, keep switch  */
+  .tax-toggle label {
+    display: none;
+  }
+
+  .tax-toggle {
+    padding: 0.4rem 0.6rem;
+    height: 2.4rem;
+  }
+
+  /* Edit form: full width on mobile           */
+  .col-8.offset-2 {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding: 0 0.5rem;
+  }
+
+  /* Edit form image preview                   */
+  .edit-preview-img {
+    max-width: 100%;
+    height: 160px;
+  }
 }

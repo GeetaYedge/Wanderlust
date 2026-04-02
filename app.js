@@ -1,6 +1,4 @@
-if (process.env.NODE_ENV != "production") {
-  require("dotenv").config();
-}
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
@@ -17,7 +15,9 @@ const userRouter = require("./routes/user");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("./models/user.js");
+
 const wrapAsync = require("./utils/wrapAsync.js");
 
 process.on("uncaughtException", (err) => {
@@ -42,12 +42,11 @@ async function main() {
 }
 
 app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
-app.use(express.static(path.join(__dirname, "/public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 const store = MongoStore.create({
   mongoUrl: dbUrl,
@@ -77,7 +76,36 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.use(new LocalStrategy(User.authenticate()));
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await User.findOne({ email: profile.emails[0].value });
+
+        if (!user) {
+          user = new User({
+            username: profile.displayName,
+            email: profile.emails[0].value,
+          });
+
+          await user.save();
+        }
+
+        return done(null, user);
+      } catch (err) {
+        return done(err, null);
+      }
+    },
+  ),
+);
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
