@@ -105,18 +105,20 @@ body {
   border: none !important;
 }
 
+.listing-img,
 .show-img {
   width: 100%;
-  max-height: 480px;
-  height: 30vh;
+  height: 20rem;
+  max-height: 20rem;
   object-fit: cover;
+  object-position: center;
 }
 
 .btns {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 
